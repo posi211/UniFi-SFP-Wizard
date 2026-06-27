@@ -12,6 +12,11 @@ Feel free to contribute to this project.
 
 https://apps.microsoft.com/detail/9nb23j84168c?hl=de-DE&gl=DE
 
+### MacOS, Windows, Debian
+
+Have a look at the Release Page: 
+https://github.com/Gamer08YT/UniFi-SFP-Wizard/releases/
+
 ## Live Demo
 
 #### Glass Design
