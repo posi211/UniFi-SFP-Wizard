@@ -7,6 +7,12 @@
       "name": "FS-SFP-10GLR-31",
       "vendor": "FS.com",
       "author": "JaXnPriVate"
+    },
+    {
+      "file": "UACC-CM-RJ45-MG.uieeprom",
+      "name": "UACC-CM-RJ45-MG",
+      "vendor": "Ubiquiti",
+      "author": "TheZackCodec"
     }
   ]
 }
