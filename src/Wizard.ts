@@ -1,4 +1,4 @@
-import $, {data} from "jquery";
+import $, {now} from "jquery";
 import i18next from "i18next";
 import * as enCommon from "./language/en-US.json";
 import * as deCommon from "./language/de-DE.json";
@@ -10,7 +10,6 @@ import {ProtocolType} from "./ProtocolType";
 import {FormatType} from "./FormatType";
 import {Repository} from "./Repository";
 import untar from "js-untar";
-import * as bottleneck from "bottleneck";
 
 class Wizard {
     // Normaly it's UACC-SFP-Wizard don't know why Edge display it as Sfp Wizard.
@@ -271,9 +270,9 @@ class Wizard {
                     const data = (r as any).header;
 
                     if (data.statusCode == 200) {
-                        Notify.success(i18next.t("common:reboot-success"));
+                        Wizard.notify(i18next.t("common:reboot-success"), "success");
                     } else {
-                        Notify.failure(i18next.t("common:reboot-failed"));
+                        Wizard.notify(i18next.t("common:reboot-failed"), "warning");
                     }
                 });
             });
@@ -297,17 +296,17 @@ class Wizard {
                         const header = (r as any).header;
 
                         if (header.statusCode == 200) {
-                            Notify.success(i18next.t("common:eeprom-dump-send"));
+                            Wizard.notify(i18next.t("common:eeprom-dump-send"), "success");
                         } else {
-                            Notify.failure(i18next.t("common:eeprom-sync-error"));
+                            Wizard.notify(i18next.t("common:eeprom-sync-error"), "warning");
                         }
                     } else {
-                        Notify.failure(i18next.t("common:eeprom-sync-nomodule"));
+                        Wizard.notify(i18next.t("common:eeprom-sync-nomodule"), "failure");
                     }
                 });
             } else {
                 // Notify for wrong EEPROM Selection.
-                Notify.failure(i18next.t("common:no-eeprom-selected"));
+                Wizard.notify(i18next.t("common:no-eeprom-selected"), "failure");
             }
         });
 
@@ -315,7 +314,7 @@ class Wizard {
         Wizard.nameButton.on("click", () => {
             Confirm.prompt(i18next.t("common:name-title"), i18next.t("common:name-message"), i18next.t("common:default-name"), i18next.t("common:yes"), i18next.t("common:no"), (data: string) => {
                 if (data.length > 28) {
-                    Notify.failure(i18next.t("common:name-too-long"));
+                    Wizard.notify(i18next.t("common:name-too-long"), "failure");
 
                     return;
                 }
@@ -325,11 +324,11 @@ class Wizard {
                     const data = (r as any).header;
 
                     if (data.statusCode == 200) {
-                        Notify.success(i18next.t("common:name-success"));
+                        Wizard.notify(i18next.t("common:name-success"), "success");
                     } else if (data.statusCode == 304) {
-                        Notify.warning(i18next.t("common:name-unchanged"));
+                        Wizard.notify(i18next.t("common:name-unchanged"), "warning");
                     } else {
-                        Notify.failure(i18next.t("common:name-failed"));
+                        Wizard.notify(i18next.t("common:name-failed"), "failure");
                     }
                 });
             });
@@ -433,7 +432,7 @@ class Wizard {
         // Set GATT Event Listener.
         device.addEventListener('gattserverdisconnected', () => {
             // Send Disconnected Notification.
-            Notify.warning(i18next.t("common:disconnected"));
+            this.notify(i18next.t("common:disconnected"), "warning");
 
             this.setConnected(false);
         })
@@ -449,13 +448,13 @@ class Wizard {
                 // Set Battery Level.
                 this.setText("battery", data.level + "%");
             } else {
-                Notify.failure(i18next.t("common:mac-failed"));
+                Wizard.notify(i18next.t("common:mac-failed"), "failure");
             }
 
         });
 
         // Send Connected Notification.
-        Notify.success(i18next.t("common:connected"));
+        Wizard.notify(i18next.t("common:connected"), "success");
 
         // Query Device Meta.
         await this.queryDeviceInfo();
@@ -668,9 +667,9 @@ class Wizard {
         const data = JSON.parse(Wizard.decodeJSON(response))
 
         if (data.ret != undefined && data.ret == "ok") {
-            Notify.success(i18next.t("common:command-success"));
+            Wizard.notify(i18next.t("common:command-success"), "success");
         } else {
-            Notify.success(i18next.t("common:command-failed"));
+            Wizard.notify(i18next.t("common:command-failed"), "failure");
         }
     }
 
@@ -1322,10 +1321,10 @@ class Wizard {
                 Wizard.setModule("compliance", data.compliance);
 
                 // Print Success Toast.
-                Notify.success(i18next.t("common:module-message"));
+                Wizard.notify(i18next.t("common:module-message"), "success");
             } else {
                 // Print Warning Toast.
-                Notify.warning(i18next.t("common:module-error"));
+                Wizard.notify(i18next.t("common:module-error"), "warning");
             }
         });
     }
@@ -1354,12 +1353,12 @@ class Wizard {
                             return await Wizard.sendApiRequestRaw("POST", `/api/1.0/${Wizard.handleMAC(Wizard.deviceId)}/xsfp/sync/data`, eeprom);
                         } else {
                             // Notify Error.
-                            Notify.failure(i18next.t("common:eeprom-sync-error"));
+                            Wizard.notify(i18next.t("common:eeprom-sync-error"), "failure");
                         }
                     });
                 } else {
                     // Notify Error.
-                    Notify.failure(i18next.t("common:eeprom-file-error"));
+                    Wizard.notify(i18next.t("common:eeprom-file-error"), "failure");
 
                     // Throw Error.
                     throw new Error("Invalid File Type");
@@ -1382,11 +1381,11 @@ class Wizard {
                 const data = (r as any).body;
 
                 if (data.size == undefined || data.chunk == undefined) {
-                    Notify.warning(i18next.t("common:module-error"));
+                    Wizard.notify(i18next.t("common:module-error"), "warning");
                     //throw new Error("size or chunk required");
                 } else {
                     // Show Read Notification.
-                    Notify.info(i18next.t("common:module-read"));
+                    Wizard.notify(i18next.t("common:module-read"), "info");
 
                     // Print Debug Message.
                     console.log(`Received size: ${data.size} and chunk: ${data.chunk}.`);
@@ -1397,7 +1396,7 @@ class Wizard {
                         this.downloadStream(r);
 
                         // Show Saved Notification.
-                        Notify.success(i18next.t("common:module-saved"));
+                        Wizard.notify(i18next.t("common:module-saved"), "success");
                     });
                 }
             });
@@ -1436,7 +1435,7 @@ class Wizard {
      * @return {void} This method does not return any value.
      */
     private static wrongBrowserBLESupport(): void {
-        Notify.failure(i18next.t("common:browser-ble-support"));
+        Wizard.notify(i18next.t("common:browser-ble-support"), "failure");
     }
 
     /**
@@ -1787,7 +1786,7 @@ class Wizard {
 
             if (header != undefined && header.statusCode == 200) {
                 // Notify Info.
-                Notify.info(i18next.t("common:sif-start"));
+                Wizard.notify(i18next.t("common:sif-start"), "info");
 
                 const body = (r as any).body;
                 /**
@@ -1848,12 +1847,12 @@ class Wizard {
                     this.downloadStream({body: s}, "text/plain", "sif.log");
 
                     // Notify Success.
-                    Notify.success(i18next.t("common:sif-finish"));
+                    Wizard.notify(i18next.t("common:sif-finish"), "success");
                 });
 
             } else {
                 // Notify Error.
-                Notify.failure(i18next.t("common:sif-error-start"));
+                Wizard.notify(i18next.t("common:sif-error-start"), "failure");
             }
         });
     }
@@ -2063,6 +2062,26 @@ class Wizard {
         return v === "" || v === "1" || v === "true" || v === "yes" || v === "on";
     }
 
+    private static notify(text: string, type: string) {
+        if(type == "warning")
+            Notify.warning(text);
+        else if(type == "failure")
+            Notify.failure(text);
+        else if (type == "info")
+            Notify.info(text);
+        else if (type == "success")
+            Notify.success(text);
+        else
+            Notify.failure("Unknown Notification Type!");
+
+
+        // @ts-ignore
+        if (window.electronAPI !== undefined) {
+            // Send Notification to Backend.
+            // @ts-ignore
+            window.electronAPI.pushNotification(type, text);
+        }
+    }
 }
 
 new Wizard();

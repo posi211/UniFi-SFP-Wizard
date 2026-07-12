@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain} from 'electron';
+import {app, BrowserWindow, ipcMain, Notification} from 'electron';
 import * as path from "node:path";
 
 class Electron {
@@ -66,6 +66,34 @@ class Electron {
             }
         });
 
+        // Handle Notifications.
+        ipcMain.on("notification", (event, value) => {
+            if(!this.windowInstance?.isFocused()) {
+                // Send Notification if supported.
+                if(Notification.isSupported()) {
+                    const notification = new Notification({
+                       title: "SFP-Wizard",
+                        subtitle: "",
+                        body: value.text
+                    });
+
+                    notification.show();
+
+                    console.log("Notification send.");
+                } else
+                    console.log("Notification not supported.");
+
+                // Flash Icon.
+                this.windowInstance?.flashFrame(true);
+
+                // Auto Hide Flash Cooldown.
+                setTimeout(() => {
+                    this.windowInstance?.flashFrame(false);
+                }, 1000);
+
+            }
+        });
+
         // Print Debug Message.
         console.log("Window Created");
 
@@ -121,6 +149,7 @@ class Electron {
 
         console.log(`Working Directory: ${workDir}`);
     }
+
 }
 
 // Start the application.

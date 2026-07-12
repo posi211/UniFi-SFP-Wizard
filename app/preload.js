@@ -13,4 +13,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     selectBluetoothDevice: (value) => {
         ipcRenderer.send("select", value);
     },
+    pushNotification: (type, message) => {
+        ipcRenderer.send("notification", {type: type, text: message});
+    }
 });
