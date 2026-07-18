@@ -43,7 +43,8 @@ module.exports = {
             name: '@electron-forge/maker-dmg',
             config: {
                 background: './build/appx/SplashScreen.scale-400.png',
-                format: 'ULFO'
+                format: 'ULFO',
+                icon: './build/macos-icon.png'
             }
         }
     ]
