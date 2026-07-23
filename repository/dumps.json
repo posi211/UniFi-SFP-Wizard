@@ -18,7 +18,7 @@
       "file": "CISCO-ACCELINK-RTXM228-551-C98.uieeprom",
       "name":  "CISCO-ACCELINK-RTXM228-551-C98 - MA-SFP-10GB-SR 10G 850NM MM",
       "vendor": "Cisco",
-      "author:: "Maui",
+      "author": "Maui",
     }
     {  
       "file": "CISCO-FTLF1318P3BTL-C1.uieeprom",
