@@ -15,50 +15,51 @@ export class Repository {
      *
      * @return {void} Does not return a value.
      */
-public static fetchTemplates() {
-    const url = this.baseUrl + "contents/repository";
+    public static fetchTemplates() {
+        const url = this.baseUrl + "contents/repository";
 
-    $.get(url, (data) => {
-        const nameByFile: { [key: string]: string } = {};
+        $.get(url, (data) => {
+            const nameByFile: { [key: string]: string } = {};
 
-        // @ts-ignore
-        const dumpsEntry = data.find(element => element.name === "dumps.json");
-
-        const populateOptions = () => {
             // @ts-ignore
-            data.forEach(element => {
-                if (element.name.endsWith(".uieeprom")) {
-                    const label = nameByFile[element.name] || element.name.replace(".uieeprom", "");
-                    $("#sfp-repo").append(`<option value="${element.name}">${label}</option>`)
-                }
-            })
+            const dumpsEntry = data.find(element => element.name === "dumps.json");
 
-            console.log("Fetched Templates.");
-        };
-
-        if (dumpsEntry) {
-            $.get(dumpsEntry.download_url, (dumpsData) => {
-                try {
-                    const parsed = typeof dumpsData === "string" ? JSON.parse(dumpsData) : dumpsData;
-
-                    if (parsed && Array.isArray(parsed.dumps)) {
-                        parsed.dumps.forEach((dump: { file: string, name: string }) => {
-                            if (dump.file && dump.name) {
-                                nameByFile[dump.file] = dump.name;
-                            }
-                        });
+            const populateOptions = () => {
+                // @ts-ignore
+                data.forEach(element => {
+                    if (element.name.endsWith(".uieeprom")) {
+                        const label = nameByFile[element.name] || element.name.replace(".uieeprom", "");
+                        $("#sfp-repo").append(`<option value="${element.name}">${label}</option>`)
                     }
-                } catch (e) {
-                    console.warn("Failed to parse dumps.json, falling back to filenames.", e);
-                }
+                })
 
+                console.log("Fetched Templates.");
+            };
+
+            if (dumpsEntry) {
+                $.get(dumpsEntry.download_url, (dumpsData) => {
+                    try {
+                        const parsed = typeof dumpsData === "string" ? JSON.parse(dumpsData) : dumpsData;
+
+                        if (parsed && Array.isArray(parsed.dumps)) {
+                            parsed.dumps.forEach((dump: { file: string, name: string }) => {
+                                if (dump.file && dump.name) {
+                                    nameByFile[dump.file] = dump.name;
+                                }
+                            });
+                        }
+                    } catch (e) {
+                        console.warn("Failed to parse dumps.json, falling back to filenames.", e);
+                    }
+
+                    populateOptions();
+                }).fail(() => {
+                    console.warn("Failed to fetch dumps.json, falling back to filenames.");
+                    populateOptions();
+                });
+            } else {
                 populateOptions();
-            }).fail(() => {
-                console.warn("Failed to fetch dumps.json, falling back to filenames.");
-                populateOptions();
-            });
-        } else {
-            populateOptions();
-        }
-    });
+            }
+        });
+    }
 }
