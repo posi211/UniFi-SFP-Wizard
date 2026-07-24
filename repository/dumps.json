@@ -25,6 +25,12 @@
       "name": "CISCO-GLC-LH-SMD 1000BASE-LX/LH (1G 1310NM SM)",
       "vendor": "Cisco",
       "author": "Maui"
+    },
+    {
+      "file": "FS-SFP1G-LX-31.uieeprom",
+      "name": "FS SFP1G-LX-32 (1310nm SM 1Gig)",
+      "vendor": "FS"
+      "author": "Maui"
     }
   ]
 }
