@@ -13,18 +13,18 @@
       "name": "UACC-CM-RJ45-MG",
       "vendor": "Ubiquiti",
       "author": "TheZackCodec"
-    }
+    },
     {
       "file": "CISCO-ACCELINK-RTXM228-551-C98.uieeprom",
       "name":  "CISCO-MA-SFP-10GB-SR 10G 850NM MM",
       "vendor": "Cisco",
-      "author": "Maui",
-    }
+      "author": "Maui"
+    },
     {  
       "file": "CISCO-FTLF1318P3BTL-C1.uieeprom",
       "name": "CISCO-GLC-LH-SMD 1000BASE-LX/LH (1G 1310NM SM)",
       "vendor": "Cisco",
-      "author": "Maui",
+      "author": "Maui"
     }
   ]
 }
