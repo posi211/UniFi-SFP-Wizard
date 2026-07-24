@@ -29,7 +29,7 @@
     {
       "file": "FS-SFP1G-LX-31.uieeprom",
       "name": "FS SFP1G-LX-32 (1310nm SM 1Gig)",
-      "vendor": "FS"
+      "vendor": "FS",
       "author": "Maui"
     }
   ]
