@@ -49,6 +49,12 @@
   "name": "IBM/Blade Network BN-CKM-SP-SR 10GBase-SR (850nm, 300m)",
   "vendor": "IBM/Blade Network Technologies",
   "author": "krusic22 (SFP-Transceiver-Flashing collection)"
-   }
+   },
+    {
+  "file": "ADDON-J4859C-AO.uieeprom",
+  "name": "HP J4859C Compatible TAA 1000Base-LX (SMF, 1310nm, 10km, LC, DOM)",
+  "vendor": "Addon",
+  "author": "Maui"
+    }  
   ]
 }
